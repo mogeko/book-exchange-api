@@ -1,0 +1,57 @@
+name: Test
+on:
+  pull_request:
+  push:
+    branches-ignore:    
+      - master
+
+jobs:
+  test:
+    name: Test Elixir
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: shorten_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      MIX_ENV: test
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up cache
+        id: cache-deps-and-build
+        uses: actions/cache@v3
+        with:
+          path: |
+            _build
+            deps
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: 24
+          elixir-version: 1.13.4
+
+      - name: Set up Phoenix
+        run: mix setup
+
+      - name: Run Test
+        run: mix test
+
+      - name: Statistical code coverage
+        run: mix cov
