@@ -51,3 +51,6 @@ jobs:
 
       - name: Run Test
         run: mix test
+
+      - name: Statistical code coverage
+        run: mix cov
