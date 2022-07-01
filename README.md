@@ -1,5 +1,7 @@
 # BookExchange
 
+[![test_badge](https://github.com/mogeko/book-exchange-api/actions/workflows/test.yml/badge.svg)](https://github.com/mogeko/book-exchange-api/actions/workflows/test.yml)
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
